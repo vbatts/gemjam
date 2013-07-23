@@ -46,6 +46,16 @@ To grep only the jar name
 	$ gemjar -g sinatra | grep -e ^Created.*jar$ | cut -d " " -f 2
 	d20130723-10726-1sgce23.jar
 
+To specify an alternate jruby executable
+
+	$ gemjar -j "java -jar ~/Downloads/jruby-complete-1.7.4.jar" -g sinatra
+	{:jruby=>"java -jar ~/Downloads/jruby-complete-1.7.4.jar", :gems=>["sinatra"]}
+	Successfully installed rack-1.5.2
+	Successfully installed tilt-1.4.1
+	Successfully installed rack-protection-1.5.0
+	Successfully installed sinatra-1.4.3
+	4 gems installed
+	Created d20130723-24156-1omlum7.jar
 
 ## Contributing
 
