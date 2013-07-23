@@ -30,6 +30,17 @@ Combo, but Gemfile from another directory
 
 	gemjar -b ../foo/Gemfile -g sinatra,1.3.5 -g hurp
 
+You'll get an output like
+
+	$ gemjar -g sinatra
+	{:jruby=>"jruby", :gems=>["sinatra"]}
+	Successfully installed rack-1.5.2
+	Successfully installed tilt-1.4.1
+	Successfully installed rack-protection-1.5.0
+	Successfully installed sinatra-1.4.3
+	4 gems installed
+	Created d20130723-10726-1sgce23.jar
+
 ## Contributing
 
 1. Fork it
