@@ -41,6 +41,12 @@ You'll get an output like
 	4 gems installed
 	Created d20130723-10726-1sgce23.jar
 
+To grep only the jar name
+
+	$ gemjar -g sinatra | grep -e ^Created.*jar$ | cut -d " " -f 2
+	d20130723-10726-1sgce23.jar
+
+
 ## Contributing
 
 1. Fork it
