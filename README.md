@@ -59,6 +59,25 @@ To specify an alternate jruby executable
 
 How this is used practically aftwards
 
+	$ gemjar -j "java -jar ~/Downloads/jruby-complete-1.7.4.jar" -g rye
+	{:jruby=>"java -jar ~/Downloads/jruby-complete-1.7.4.jar", :gems=>["rye"]}
+	Successfully installed highline-1.6.19
+	Successfully installed annoy-0.5.6
+	Successfully installed storable-0.8.9
+	Successfully installed drydock-0.6.9
+	Successfully installed sysinfo-0.8.0
+	Successfully installed net-ssh-2.6.8
+	Successfully installed net-scp-1.1.2
+	Successfully installed docile-1.0.3
+	Successfully installed rye-0.9.8
+	9 gems installed
+	Created d20130723-835-1i0moio.jar
+	$ java -jar ~/Downloads/jruby-complete-1.7.4.jar -r ./d20130723-835-1i0moio.jar -r rye -e 'puts Rye::Box.new("mybox.example.com").uptime'
+	 23:36:22 up 133 days,  9:23,  0 users,  load average: 0.06, 0.05, 0.05
+
+
+or
+
 	$ gemjar -g warbler
 	{:jruby=>"jruby", :gems=>["warbler"]}
 	Successfully installed rake-10.1.0
