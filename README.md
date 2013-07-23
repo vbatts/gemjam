@@ -57,6 +57,20 @@ To specify an alternate jruby executable
 	4 gems installed
 	Created d20130723-24156-1omlum7.jar
 
+How this is used practically aftwards
+
+	$ gemjar -g warbler
+	{:jruby=>"jruby", :gems=>["warbler"]}
+	Successfully installed rake-10.1.0
+	Successfully installed jruby-jars-1.7.4
+	Successfully installed warbler-1.3.8
+	3 gems installed
+	Created d20130723-24956-4o39ld.jar
+	$ jruby -r ./d20130723-24956-4o39ld.jar -S warble
+	rm -f hurp.war
+	Creating hurp.war
+
+
 ## Contributing
 
 1. Fork it
