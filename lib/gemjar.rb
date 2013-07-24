@@ -15,11 +15,15 @@ require "fileutils"
 module Gemjar
   def parse_args(args)
     options = {
+      :quiet => false,
       :jruby => "jruby",
-      :gems => [],
+      :gems  => [],
     }
     opts = OptionParser.new do |opts|
       opts.banner = File.basename(__FILE__) + "[-b [Gemfile]] [-g gem[,version]]..."
+      opts.on("-q", "--quiet", "less output") do |o|
+        options[:quiet] = o
+      end
       opts.on("-j", "--jruby CMD", "CMD to use to call jruby (Default '#{options[:jruby]}')") do |o|
         options[:jruby] = o
       end
@@ -40,32 +44,45 @@ module Gemjar
     return options
   end
 
-  def cmd(cmd_str)
+  # runs +cmd+, and sets $? with that commands return value
+  def cmd(cmd_str, quiet = false)
+    p cmd_str unless quiet
     IO.popen(cmd_str) do |f|
       loop do
-        buf = f.read(10)
+        buf = f.read(1)
         break if buf.nil?
-        print buf
-        $stdout.flush
+        unless quiet
+          print buf
+          $stdout.flush
+        end
       end
     end
   end
 
-  def gem_install(jruby, basedir, gemname)
+  # install rubygem +gemname+ to directory +basedir+ using jruby command +jruby+
+  # 
+  # sets $? with that commands return value
+  def gem_install(jruby, basedir, gemname, quiet = false)
     if gemname.include?(",")
       g, v = gemname.split(",",2)
-      cmd("#{jruby} -S gem install -i #{basedir} #{g} -v=#{v}")
+      cmd("#{jruby} -S gem install -i #{basedir} #{g} -v=#{v}", quiet)
     else
-      cmd("#{jruby} -S gem install -i #{basedir} #{gemname}")
+      cmd("#{jruby} -S gem install -i #{basedir} #{gemname}", quiet)
     end
   end
 
-  def make_jar(jarname, dirname)
-    cmd("jar cf #{jarname} -C #{dirname} .")
+  # pack up the installed gems in +dirname+, to jar file +jarname+
+  # 
+  # sets $? with that commands return value
+  def make_jar(jarname, dirname, quiet = false)
+    cmd("jar cf #{jarname} -C #{dirname} .", quiet)
   end
 
-  def bundle_install
-    cmd("bundle install --path ./vendor/bundle/")
+  # install the bundle, using jruby command +jruby+
+  # 
+  # sets $? with that commands return value
+  def bundle_install(jruby, quiet = false)
+    cmd("#{jruby} -S bundle install --path ./vendor/bundle/", quiet)
   end
 
   def bundler_vendor_dir
@@ -77,7 +94,7 @@ module Gemjar
 
   def main(args)
     o = parse_args(args)
-    p o
+    p o unless o[:quiet]
 
     tmpdir = Dir.mktmpdir
     begin
@@ -85,17 +102,25 @@ module Gemjar
       if o[:bundle]
         FileUtils.cd tmpdir
         FileUtils.cp o[:bundle], "Gemfile"
-        bundle_install
+        bundle_install(o[:jruby], o[:quiet])
         FileUtils.cd cwd
+        abort("FAIL: bundler returned: #{$?}") if $? != 0
       end
 
       o[:gems].each do |gem|
-        gem_install(o[:jruby], File.join(tmpdir, bundler_vendor_dir), gem)
+        gem_install(o[:jruby], File.join(tmpdir, bundler_vendor_dir), gem, o[:quiet])
+        abort("FAIL: gem install returned: #{$?}") if $? != 0
       end
 
       jarname = File.basename(tmpdir) + ".jar"
-      make_jar(jarname, File.join(tmpdir, bundler_vendor_dir))
-      puts "Created #{jarname}"
+      make_jar(jarname, File.join(tmpdir, bundler_vendor_dir), o[:quiet])
+      abort("FAIL: jar packaging returned: #{$?}") if $? != 0
+
+      unless o[:quiet]
+        puts jarname
+      else
+        puts "Created #{jarname}"
+      end
     ensure
       # remove the directory.
       FileUtils.remove_entry_secure(tmpdir, true)

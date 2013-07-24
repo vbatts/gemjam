@@ -8,7 +8,7 @@
 
 Summary: Tool for packing rubygem dependencies, into a java jar
 Name: jrubygem-%{gemname}
-Version: 0.0.1
+Version: 0.0.2
 Release: 1%{?dist}
 Group: Development/Languages
 License: GPLv2+ or Ruby
@@ -61,5 +61,11 @@ rm -rf %{buildroot}
 %{gemdir}/specifications/%{gemname}-%{version}.gemspec
 
 %changelog
+* Wed Jun 24 2013 Vincent Batts - 0.0.2-1
+- fail on a command failure
+- `bundle` uses jruby now
+- flag for quiet output
+- a few comments
+
 * Tue Jun 23 2013 Vincent Batts - 0.0.1-1
 - initial package
