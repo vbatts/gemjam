@@ -116,7 +116,7 @@ module Gemjar
       make_jar(jarname, File.join(tmpdir, bundler_vendor_dir), o[:quiet])
       abort("FAIL: jar packaging returned: #{$?}") if $? != 0
 
-      unless o[:quiet]
+      if o[:quiet]
         puts jarname
       else
         puts "Created #{jarname}"
