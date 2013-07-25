@@ -6,10 +6,12 @@
 %global gemdir %(%{ruby_exec} -rubygems -e 'puts Gem::dir' 2>/dev/null)
 %global geminstdir %{gemdir}/gems/%{gemname}-%{version}
 
+%define rel %{?gitrev}%{!?gitrev:1}
+
 Summary: Tool for packing rubygem dependencies, into a java jar
 Name: jrubygem-%{gemname}
 Version:  %{?version}%{!?version:0.0.2}
-Release: 1%{?dist}
+Release: %{rel}%{?dist}
 Group: Development/Languages
 License: GPLv2+ or Ruby
 URL: http://git.corp.redhat.com/cgit/dev/towers/engineering/gems/gemjar/
