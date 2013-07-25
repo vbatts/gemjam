@@ -6,7 +6,7 @@ Create a *.jar, for jRuby, from installing gems or a bundler Gemfile
 --vbatts
 =end
 
-require "gemjar/version"
+require "gemjam/version"
 require "optparse"
 require "rbconfig"
 require "tmpdir"
