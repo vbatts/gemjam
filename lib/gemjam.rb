@@ -12,7 +12,7 @@ require "rbconfig"
 require "tmpdir"
 require "fileutils"
 
-module Gemjar
+module Gemjam
   def parse_args(args)
     options = {
       :quiet => false,

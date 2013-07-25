@@ -1,7 +1,7 @@
 %global ruby_exec jruby
 %global gem_exec %{ruby_exec} -S gem
 
-%global gemname gemjar
+%global gemname gemjam
 
 %global gemdir %(%{ruby_exec} -rubygems -e 'puts Gem::dir' 2>/dev/null)
 %global geminstdir %{gemdir}/gems/%{gemname}-%{version}
@@ -14,7 +14,7 @@ Version:  %{?version}%{!?version:0.0.2}
 Release: %{rel}%{?dist}
 Group: Development/Languages
 License: GPLv2+ or Ruby
-URL: http://git.corp.redhat.com/cgit/dev/towers/engineering/gems/gemjar/
+URL: http://git.corp.redhat.com/cgit/dev/towers/engineering/gems/gemjam/
 Source0: %{gemname}-%{version}.gem
 Requires: jruby
 Requires: jrubygem(bundler)
@@ -49,8 +49,8 @@ rm -rf %{buildroot}
 
 %files
 %dir %{geminstdir}
-%{_bindir}/gemjar
-%{geminstdir}/bin/gemjar
+%{_bindir}/gemjam
+%{geminstdir}/bin/gemjam
 %{geminstdir}/lib
 %{geminstdir}/LICENSE
 %{geminstdir}/README.md

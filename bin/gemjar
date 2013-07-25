@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require "gemjar"
+require "gemjam"
 
-include Gemjar
+include Gemjam
 main(ARGV)
 

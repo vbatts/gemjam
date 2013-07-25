@@ -1,4 +1,4 @@
-# Gemjar
+# Gemjam
 
 Create java jar, for jRuby, from gems or a bundler Gemfile
 
@@ -6,7 +6,7 @@ Create java jar, for jRuby, from gems or a bundler Gemfile
 
 Add this line to your application's Gemfile:
 
-    gem 'gemjar'
+    gem 'gemjam'
 
 And then execute:
 
@@ -14,25 +14,25 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install gemjar
+    $ gem install gemjam
 
 ## Usage
 
 Package up a specific version of one gem, and latest version of another
 
-	gemjar -g sinatra,1.3.5 -g hurp
+	gemjam -g sinatra,1.3.5 -g hurp
 
 Package up the dependencies from the Gemfile in the current directory
 
-	gemjar -b
+	gemjam -b
 
 Combo, but Gemfile from another directory
 
-	gemjar -b ../foo/Gemfile -g sinatra,1.3.5 -g hurp
+	gemjam -b ../foo/Gemfile -g sinatra,1.3.5 -g hurp
 
 You'll get an output like
 
-	$ gemjar -g sinatra
+	$ gemjam -g sinatra
 	{:jruby=>"jruby", :gems=>["sinatra"]}
 	Successfully installed rack-1.5.2
 	Successfully installed tilt-1.4.1
@@ -43,12 +43,12 @@ You'll get an output like
 
 To grep only the jar name
 
-	$ gemjar -g sinatra | grep -e ^Created.*jar$ | cut -d " " -f 2
+	$ gemjam -g sinatra | grep -e ^Created.*jar$ | cut -d " " -f 2
 	d20130723-10726-1sgce23.jar
 
 To specify an alternate jruby executable
 
-	$ gemjar -j "java -jar ~/Downloads/jruby-complete-1.7.4.jar" -g sinatra
+	$ gemjam -j "java -jar ~/Downloads/jruby-complete-1.7.4.jar" -g sinatra
 	{:jruby=>"java -jar ~/Downloads/jruby-complete-1.7.4.jar", :gems=>["sinatra"]}
 	Successfully installed rack-1.5.2
 	Successfully installed tilt-1.4.1
@@ -59,7 +59,7 @@ To specify an alternate jruby executable
 
 How this is used practically aftwards
 
-	$ gemjar -j "java -jar ~/Downloads/jruby-complete-1.7.4.jar" -g rye
+	$ gemjam -j "java -jar ~/Downloads/jruby-complete-1.7.4.jar" -g rye
 	{:jruby=>"java -jar ~/Downloads/jruby-complete-1.7.4.jar", :gems=>["rye"]}
 	Successfully installed highline-1.6.19
 	Successfully installed annoy-0.5.6
@@ -78,7 +78,7 @@ How this is used practically aftwards
 
 or
 
-	$ gemjar -g warbler
+	$ gemjam -g warbler
 	{:jruby=>"jruby", :gems=>["warbler"]}
 	Successfully installed rake-10.1.0
 	Successfully installed jruby-jars-1.7.4
