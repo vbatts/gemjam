@@ -18,6 +18,9 @@ end
 
 task :default => :build
 
+CLEAN.include 'pkg/'
+CLEAN.include 'rpmbuild/'
+
 desc "Build a SRPM for brew"
 task :srpm => [:build] do
   cmd = "rpmbuild -bs --nodeps #{@d_dist} #{@d_version} #{@d_gitrev} --define '_sourcedir ./pkg/' --define '_srcrpmdir rpmbuild/SRPMS' ./jrubygem-gemjar.spec"
