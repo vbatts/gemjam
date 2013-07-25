@@ -49,8 +49,8 @@ rm -rf %{buildroot}
 
 %files
 %dir %{geminstdir}
-%{_bindir}/gemjam
-%{geminstdir}/bin/gemjam
+%{_bindir}/%{gemname}
+%{geminstdir}/bin/%{gemname}
 %{geminstdir}/lib
 %{geminstdir}/LICENSE
 %{geminstdir}/README.md
