@@ -8,7 +8,7 @@
 
 Summary: Tool for packing rubygem dependencies, into a java jar
 Name: jrubygem-%{gemname}
-Version: 0.0.2
+Version:  %{?version}%{!?version:0.0.2}
 Release: 1%{?dist}
 Group: Development/Languages
 License: GPLv2+ or Ruby
