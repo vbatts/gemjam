@@ -24,6 +24,9 @@ module Gemjam
       opts.on("-o", "--output FILENAME", "output to jar FILENAME") do |o|
         options[:output] = o
       end
+      opts.on("-c", "--cache", "preserve the cach/*.gem files in the jar") do |o|
+        options[:cache] = o
+      end
       opts.on("-q", "--quiet", "less output") do |o|
         options[:quiet] = o
       end
@@ -110,6 +113,11 @@ module Gemjam
       opts[:gems].each do |gem|
         gem_install(opts[:jruby], File.join(tmpdir, bundler_vendor_dir), gem, opts[:quiet])
         abort("FAIL: gem install returned: #{$?}") if $? != 0
+      end
+
+      # the ./cache/*.gems just duplicates the size of this jar
+      unless opts[:cache]
+        FileUtils.remove_entry_secure(File.join(tmpdir, bundler_vendor_dir, "cache"), true)
       end
 
       jarname = opts[:output] ? opts[:output] : File.basename(tmpdir) + ".jar"
