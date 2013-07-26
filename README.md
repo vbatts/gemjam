@@ -84,20 +84,6 @@ How this is used practically aftwards
 	 23:36:22 up 133 days,  9:23,  0 users,  load average: 0.06, 0.05, 0.05
 
 
-or
-
-	$ gemjam -g warbler
-	{:jruby=>"jruby", :gems=>["warbler"]}
-	Successfully installed rake-10.1.0
-	Successfully installed jruby-jars-1.7.4
-	Successfully installed warbler-1.3.8
-	3 gems installed
-	Created d20130723-24956-4o39ld.jar
-	$ jruby -r ./d20130723-24956-4o39ld.jar -S warble
-	rm -f hurp.war
-	Creating hurp.war
-
-
 ## Contributing
 
 1. Fork it
