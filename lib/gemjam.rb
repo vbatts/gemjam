@@ -115,17 +115,30 @@ module Gemjam
         b_opts["--with"] = opts[:bundle_with] if opts[:bundle_with]
         b_opts["--without"] = opts[:bundle_without] if opts[:bundle_without]
 
-        FileUtils.cd tmpdir
-        FileUtils.cp opts[:bundle], "Gemfile"
-        if FileTest.file?("#{opts[:bundle]}.lock")
-          FileUtils.cp "#{opts[:bundle]}.lock", "Gemfile.lock"
-          b_opts["--deployment"] = ""
-          bundle_install(opts[:jruby], opts[:quiet], b_opts)
-        else
-          bundle_install(opts[:jruby], opts[:quiet], b_opts)
+        begin
+          FileUtils.cd tmpdir
+          FileUtils.cp opts[:bundle], "Gemfile"
+          if FileTest.file?("#{opts[:bundle]}.lock")
+            FileUtils.cp "#{opts[:bundle]}.lock", "Gemfile.lock"
+
+            # ensure these timestamps match the original
+            File.utime(File.atime(opts[:bundle]),
+                       File.mtime(opts[:bundle]),
+                       "Gemfile")
+            File.utime(File.atime("#{opts[:bundle]}.lock"),
+                       File.mtime("#{opts[:bundle]}.lock"),
+                       "Gemfile.lock")
+
+            b_opts["--deployment"] = ""
+            bundle_install(opts[:jruby], opts[:quiet], b_opts)
+            abort("FAIL: bundler returned: #{$?}") if $? != 0
+          else
+            bundle_install(opts[:jruby], opts[:quiet], b_opts)
+            abort("FAIL: bundler returned: #{$?}") if $? != 0
+          end
+        ensure
+          FileUtils.cd cwd
         end
-        FileUtils.cd cwd
-        abort("FAIL: bundler returned: #{$?}") if $? != 0
       end
 
       opts[:gems].each do |gem|
