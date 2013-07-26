@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["vbatts@redhat.com"]
   gem.description   = %q{Create java jar, for jRuby, from gems or a bundler Gemfile}
   gem.summary       = %q{Create java jar, for jRuby, from gems or a bundler Gemfile}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/vbatts/gemjam"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

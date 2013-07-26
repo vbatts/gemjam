@@ -46,6 +46,12 @@ module Gemjam
                              File.expand_path(o)
                            end
       end
+      opts.on("--with WITH", "bundle install --with 'foo bar' (if needed)") do |o|
+        options[:bundle_with] = o
+      end
+      opts.on("--without WITHOUT", "bundle install --without 'foo bar' (if needed)") do |o|
+        options[:bundle_without] = o
+      end
     end.parse!(args)
     return options
   end
@@ -87,8 +93,9 @@ module Gemjam
   # install the bundle, using jruby command +jruby+
   # 
   # sets $? with that commands return value
-  def bundle_install(jruby, quiet = false)
-    cmd("#{jruby} -S bundle install --path ./vendor/bundle/", quiet)
+  def bundle_install(jruby, quiet = false, opts = {})
+    ex_opts = opts.map {|k,v| [k,v] }.join(" ")
+    cmd("#{jruby} -S bundle install --path ./vendor/bundle/ #{ex_opts}", quiet)
   end
 
   def bundler_vendor_dir
@@ -103,9 +110,20 @@ module Gemjam
     begin
       cwd = Dir.pwd
       if opts[:bundle]
+
+        b_opts = {}
+        b_opts["--with"] = opts[:bundle_with] if opts[:bundle_with]
+        b_opts["--without"] = opts[:bundle_without] if opts[:bundle_without]
+
         FileUtils.cd tmpdir
         FileUtils.cp opts[:bundle], "Gemfile"
-        bundle_install(opts[:jruby], opts[:quiet])
+        if FileTest.file?("#{opts[:bundle]}.lock")
+          FileUtils.cp "#{opts[:bundle]}.lock", "Gemfile.lock"
+          b_opts["--deployment"] = ""
+          bundle_install(opts[:jruby], opts[:quiet], b_opts)
+        else
+          bundle_install(opts[:jruby], opts[:quiet], b_opts)
+        end
         FileUtils.cd cwd
         abort("FAIL: bundler returned: #{$?}") if $? != 0
       end
