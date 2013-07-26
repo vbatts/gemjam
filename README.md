@@ -16,6 +16,14 @@ Or install it yourself as:
 
     $ gem install gemjam
 
+
+## Dependencies
+
+On fedora, for the java `jar` command:
+
+	yum install java-devel-openjdk
+
+
 ## Usage
 
 Package up a specific version of one gem, and latest version of another
