@@ -21,6 +21,9 @@ module Gemjam
     }
     opts = OptionParser.new do |opts|
       opts.banner = File.basename(__FILE__) + "[-b [Gemfile]] [-g gem[,version]]..."
+      opts.on("-o", "--output FILENAME", "output to jar FILENAME") do |o|
+        options[:output] = o
+      end
       opts.on("-q", "--quiet", "less output") do |o|
         options[:quiet] = o
       end
@@ -92,31 +95,28 @@ module Gemjam
 
   end
 
-  def main(args)
-    o = parse_args(args)
-    p o unless o[:quiet]
-
+  def run(opts)
     tmpdir = Dir.mktmpdir
     begin
       cwd = Dir.pwd
-      if o[:bundle]
+      if opts[:bundle]
         FileUtils.cd tmpdir
-        FileUtils.cp o[:bundle], "Gemfile"
-        bundle_install(o[:jruby], o[:quiet])
+        FileUtils.cp opts[:bundle], "Gemfile"
+        bundle_install(opts[:jruby], opts[:quiet])
         FileUtils.cd cwd
         abort("FAIL: bundler returned: #{$?}") if $? != 0
       end
 
-      o[:gems].each do |gem|
-        gem_install(o[:jruby], File.join(tmpdir, bundler_vendor_dir), gem, o[:quiet])
+      opts[:gems].each do |gem|
+        gem_install(opts[:jruby], File.join(tmpdir, bundler_vendor_dir), gem, opts[:quiet])
         abort("FAIL: gem install returned: #{$?}") if $? != 0
       end
 
-      jarname = File.basename(tmpdir) + ".jar"
-      make_jar(jarname, File.join(tmpdir, bundler_vendor_dir), o[:quiet])
+      jarname = opts[:output] ? opts[:output] : File.basename(tmpdir) + ".jar"
+      make_jar(jarname, File.join(tmpdir, bundler_vendor_dir), opts[:quiet])
       abort("FAIL: jar packaging returned: #{$?}") if $? != 0
 
-      if o[:quiet]
+      if opts[:quiet]
         puts jarname
       else
         puts "Created #{jarname}"
@@ -125,5 +125,12 @@ module Gemjam
       # remove the directory.
       FileUtils.remove_entry_secure(tmpdir, true)
     end
+  end
+
+  def main(args)
+    o = parse_args(args)
+    p o unless o[:quiet]
+
+    run(o)
   end
 end
