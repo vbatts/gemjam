@@ -7,23 +7,25 @@ require 'erb'
 require "rake/clean"
 require File.expand_path('../lib/gemjam/version', __FILE__)
 
-def git_rev                                                                     
-  `git rev-parse --short HEAD`.chomp                                         
-end                                                                             
+def git_rev
+  `git rev-parse --short HEAD`.chomp
+end
 
 @dist = ENV["dist"] || ".fc16"
 @d_dist = " --define 'dist #{@dist}'"
 
 @rpmname = "jrubygem-gemjam"
-@gemfile = "pkg/gemjam-#{Gemjam::VERSION}.gem" 
+@gemfile = "pkg/gemjam-#{Gemjam::VERSION}.gem"
 @rpmspecfile = "rpmbuild/SPECS/#{@rpmname}.spec"
-@srpmfile = "rpmbuild/SRPMS/#{@rpmname}-#{Gemjam::VERSION}-#{git_rev}#{@dist}.src.rpm" 
+@srpmfile = "rpmbuild/SRPMS/#{@rpmname}-#{Gemjam::VERSION}-#{git_rev}#{@dist}.src.rpm"
 
 task :default => :build
 
 %w{ ./pkg/ ./rpmbuild/ }.each do |dir|
-  Find.find(dir) do |path|
-    CLEAN.include path if FileTest.file? path
+  if FileTest.directory? dir                                                     
+    Find.find(dir) do |path|
+      CLEAN.include path if FileTest.file? path
+    end
   end
 end
 
