@@ -24,6 +24,9 @@ module Gemjam
       opts.on("-o", "--output FILENAME", "output to jar FILENAME") do |o|
         options[:output] = o
       end
+      opts.on("--keep", "preserve the temp working directory (for debugging)") do |o|
+        options[:keep] = o
+      end
       opts.on("-c", "--cache", "preserve the cach/*.gem files in the jar") do |o|
         options[:cache] = o
       end
@@ -169,7 +172,7 @@ module Gemjam
       end
     ensure
       # remove the directory.
-      FileUtils.remove_entry_secure(tmpdir, true)
+      FileUtils.remove_entry_secure(tmpdir, true) unless opts[:keep]
     end
   end
   module_function :run
