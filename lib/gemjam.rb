@@ -126,8 +126,10 @@ module Gemjam
         b_opts["--without"] = opts[:bundle_without] if opts[:bundle_without]
 
         begin
-          FileUtils.cd tmpdir
+          FileUtils.cd tmpdir, :verbose => !opts[:quiet]
           FileUtils.cp opts[:bundle], "Gemfile"
+
+          # If there is a bundler lockfile, then use it too
           if FileTest.file?("#{opts[:bundle]}.lock")
             FileUtils.cp "#{opts[:bundle]}.lock", "Gemfile.lock"
 
@@ -140,14 +142,12 @@ module Gemjam
                        "Gemfile.lock")
 
             b_opts["--deployment"] = ""
-            bundle_install(opts[:jruby], opts[:quiet], b_opts)
-            abort("FAIL: bundler returned: #{$?}") if $? != 0
-          else
-            bundle_install(opts[:jruby], opts[:quiet], b_opts)
-            abort("FAIL: bundler returned: #{$?}") if $? != 0
           end
+
+          bundle_install(opts[:jruby], opts[:quiet], b_opts)
+          abort("FAIL: bundler returned: #{$?}") if $? != 0
         ensure
-          FileUtils.cd cwd
+          FileUtils.cd cwd, :verbose => !opts[:quiet]
         end
       end
 
