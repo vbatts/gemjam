@@ -11,7 +11,7 @@ def git_rev
   `git rev-parse --short HEAD`.chomp
 end
 
-@dist = ENV["dist"] || ".fc16"
+@dist = ENV["dist"] || ".el6"
 @d_dist = " --define 'dist #{@dist}'"
 
 @rpmname = "jrubygem-gemjam"
