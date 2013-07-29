@@ -55,6 +55,7 @@ module Gemjam
     end.parse!(args)
     return options
   end
+  module_function :parse_args
 
   # runs +cmd+, and sets $? with that commands return value
   def cmd(cmd_str, quiet = false)
@@ -70,6 +71,7 @@ module Gemjam
       end
     end
   end
+  module_function :cmd
 
   # install rubygem +gemname+ to directory +basedir+ using jruby command +jruby+
   # 
@@ -82,6 +84,7 @@ module Gemjam
       cmd("#{jruby} -S gem install -i #{basedir} #{gemname}", quiet)
     end
   end
+  module_function :gem_install
 
   # pack up the installed gems in +dirname+, to jar file +jarname+
   # 
@@ -89,6 +92,7 @@ module Gemjam
   def make_jar(jarname, dirname, quiet = false)
     cmd("jar cf #{jarname} -C #{dirname} .", quiet)
   end
+  module_function :make_jar
 
   # install the bundle, using jruby command +jruby+
   # 
@@ -97,6 +101,7 @@ module Gemjam
     ex_opts = opts.map {|k,v| [k,v] }.join(" ")
     cmd("#{jruby} -S bundle install --path ./vendor/bundle/ #{ex_opts}", quiet)
   end
+  module_function :bundle_install
 
   def bundler_vendor_dir
     return ["vendor","bundle",
@@ -104,7 +109,9 @@ module Gemjam
             RbConfig::CONFIG["ruby_version"]].join("/")
 
   end
+  module_function :bundler_vendor_dir
 
+  # run(parse_args("-q","-o",jarname,"-b","Gemfile"))
   def run(opts)
     tmpdir = Dir.mktmpdir
     begin
@@ -165,6 +172,7 @@ module Gemjam
       FileUtils.remove_entry_secure(tmpdir, true)
     end
   end
+  module_function :run
 
   def main(args)
     o = parse_args(args)
@@ -172,4 +180,5 @@ module Gemjam
 
     run(o)
   end
+  module_function :main
 end

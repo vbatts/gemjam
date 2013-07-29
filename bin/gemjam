@@ -2,6 +2,5 @@
 
 require "gemjam"
 
-include Gemjam
-main(ARGV)
+Gemjam.main(ARGV)
 
