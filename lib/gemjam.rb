@@ -61,15 +61,15 @@ module Gemjam
   module_function :parse_args
 
   # runs +cmd+, and sets $? with that commands return value
-  def cmd(cmd_str, quiet = false)
+  def cmd(cmd_str, quiet = false, io = $stdout)
     p cmd_str unless quiet
     IO.popen(cmd_str) do |f|
       loop do
         buf = f.read(1)
         break if buf.nil?
         unless quiet
-          print buf
-          $stdout.flush
+          io.print buf
+          io.flush
         end
       end
     end
@@ -106,11 +106,13 @@ module Gemjam
   end
   module_function :bundle_install
 
-  def bundler_vendor_dir
-    return ["vendor","bundle",
-            RbConfig::CONFIG["ruby_install_name"],
-            RbConfig::CONFIG["ruby_version"]].join("/")
-
+  def bundler_vendor_dir(jruby)
+    return @bundler_vendor_dir if @bundler_vendor_dir
+    sio = StringIO.new
+    cmd("#{jruby} -e  '[\"vendor/bundle\",RbConfig::CONFIG[\"ruby_install_name\"], RbConfig::CONFIG[\"ruby_version\"] ].join(\"/\") '",
+        false,
+        sio)
+    @bundler_vendor_dir = sio
   end
   module_function :bundler_vendor_dir
 
@@ -152,17 +154,17 @@ module Gemjam
       end
 
       opts[:gems].each do |gem|
-        gem_install(opts[:jruby], File.join(tmpdir, bundler_vendor_dir), gem, opts[:quiet])
+        gem_install(opts[:jruby], File.join(tmpdir, bundler_vendor_dir(opts[:jruby])), gem, opts[:quiet])
         abort("FAIL: gem install returned: #{$?}") if $? != 0
       end
 
       # the ./cache/*.gems just duplicates the size of this jar
       unless opts[:cache]
-        FileUtils.remove_entry_secure(File.join(tmpdir, bundler_vendor_dir, "cache"), true)
+        FileUtils.remove_entry_secure(File.join(tmpdir, bundler_vendor_dir(opts[:jruby]), "cache"), true)
       end
 
       jarname = opts[:output] ? opts[:output] : File.basename(tmpdir) + ".jar"
-      make_jar(jarname, File.join(tmpdir, bundler_vendor_dir), opts[:quiet])
+      make_jar(jarname, File.join(tmpdir, bundler_vendor_dir(opts[:jruby])), opts[:quiet])
       abort("FAIL: jar packaging returned: #{$?}") if $? != 0
 
       if opts[:quiet]
