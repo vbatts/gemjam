@@ -110,10 +110,11 @@ module Gemjam
   def bundler_vendor_dir(jruby)
     return @bundler_vendor_dir if @bundler_vendor_dir
     sio = StringIO.new
-    cmd("#{jruby} -e  '[\"vendor/bundle\",RbConfig::CONFIG[\"ruby_install_name\"], RbConfig::CONFIG[\"ruby_version\"] ].join(\"/\") '",
+    cmd("#{jruby} -e \"print ['vendor/bundle',RbConfig::CONFIG['ruby_install_name'], RbConfig::CONFIG['ruby_version'] ].join('/')\"",
         false,
         sio)
-    @bundler_vendor_dir = sio
+    sio.seek(0)
+    @bundler_vendor_dir = sio.read()
   end
   module_function :bundler_vendor_dir
 
