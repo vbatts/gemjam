@@ -11,6 +11,7 @@ require "optparse"
 require "rbconfig"
 require "tmpdir"
 require "fileutils"
+require "stringio"
 
 module Gemjam
   def parse_args(args)
